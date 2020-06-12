@@ -10,7 +10,7 @@ import kbdctypes
 import time
 import random
 import datetime
-#import gtasa
+import gtasa
 import requests
 
 
@@ -24,7 +24,6 @@ SECRETS = json.load(open(SECRETS_PATH))
 
 
 sio_da = socketio.Client()
-sio_t_cp = socketio.Client()
 
 
 def update_config():
@@ -63,14 +62,6 @@ def handler_press_random():
     with open(vis_file_path, "w") as vfout:
         vfout.write(" ")
 
-"""
-def gtasa_random_cheat():
-    while True:
-        a = random.choice(list(CONFIG["price_handlers"].keys()))
-        if a.startswith("gtasa."):
-            eval(f"{a}()")
-            break
-"""
 
 class Donation:
     def __init__(self, message):
@@ -97,9 +88,11 @@ def on_message(data_str):
     data = json.loads(data_str)
     print(data, file=sys.stderr)
     if str(data["alert_type"]) == "1":
-        for k, price in CONFIG["price_handlers"].items():
-            if Donation(data).amount == price:
-                eval(f"{k}()")
+        if not gtasa.universal_handler(Donation(data).amount):
+            for k, price in CONFIG["price_handlers"].items():
+                if Donation(data).amount == price:
+                    eval(f"{k}()")
+
     else:
         #print(UnknownMessage(data))
         pass

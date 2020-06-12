@@ -1,28 +1,51 @@
 import kbdctypes
 import time
+import csv
+import os
 
-#https://www.ign.com/wikis/grand-theft-auto-san-andreas/Cheat_Codes_and_Secrets#GTA_San_Andreas_PC_Cheat_Codes
-#https://cyber.sports.ru/tribuna/blogs/picniconhardline/2405823.html
+CHEATS = []
+
+CWD = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(CWD, "gtasa.csv"), encoding='utf-8') as csvfile:
+    cheatsreader = csv.DictReader(csvfile, delimiter=',')
+    for cheat in cheatsreader:
+        dc = dict(cheat)
+        dc['price'] = int(dc['price'])
+        CHEATS.append(dc)
+
 
 def enter_cheat(cheat):
-    vis_format = "Interactive cheat {} activated!"
-    vis_file_path = "gtasaviz.txt"
-    with open(vis_file_path, "w") as vfout:
-            vfout.write(vis_format.format(cheat))
+    vis_format = "Interactive cheat {} activated! {}"
+    vis_file_path = os.path.join(CWD, "gtasaviz.txt")
+    with open(vis_file_path, "w", encoding="utf-8") as vfout:
+            vfout.write(vis_format.format(cheat['cheat'], cheat['description']))
 
     kbdctypes.BlockInput(True)
     for i in range(256):
         kbdctypes.ReleaseKey(i)
+    time.sleep(0.02)
 
-    for i in cheat:
-        kbdctypes.PressAndRelease(i, 0.03)
+    for i in cheat['cheat']:
+        kbdctypes.PressAndRelease(i, 0.02)
+        time.sleep(0.02)
+    time.sleep(0.02)
     kbdctypes.BlockInput(False)
 
-    time.sleep(4)
+    time.sleep(10)
     with open(vis_file_path, "w") as vfout:
         vfout.write(" ")
 
 
+def universal_handler(donation_sum):
+    for cheat in CHEATS:
+        if cheat['price'] == donation_sum:
+            enter_cheat(cheat)
+            return True
+    else:
+        return False
+
+
+"""
 def handler_give_2_stars():
     enter_cheat("OSRBLHH")
 
@@ -69,3 +92,4 @@ def handler_spawn_catafalque():
 
 def handler_spawn_stretch():
     enter_cheat("KRIJEBR")
+"""
