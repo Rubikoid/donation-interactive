@@ -1,0 +1,47 @@
+{
+    "donationalerts_server": "https://socket11.donationalerts.ru/socket.io",
+    "price_handlers": {
+        "handler_press_G": 9002,
+        "handler_press_random": 9001,
+
+        "gtasa.handler_give_2_stars": 101,
+        "gtasa.handler_clear_stars": 91,
+        "gtasa.handler_give_6_stars": 151,
+        "gtasa.handler_weapons_to_all": 92,
+        "gtasa.handler_give_parachute": 72,
+
+        "gtasa.handler_make_fat": 14,
+        "gtasa.handler_make_skinny": 24,
+
+        "gtasa.handler_spawn_rhino": 62,
+        "gtasa.handler_spawn_bloodring_banger": 42,
+        "gtasa.handler_spawn_racecar": 52,
+        "gtasa.handler_spawn_catafalque": 12,
+        "gtasa.handler_spawn_stretch": 22,
+
+        "gtasa_random_cheat": 350
+    },
+    "press_G_settings": {
+        "sequence": ["g", "LMB"],
+        "interval": 1
+    },
+    "press_random_settings": {
+        "visualiser_file": "visualizer_out.txt",
+        "random_keys": ["q", "w", "e", "a", "s", "d", "f", "c", "CTRL", "SPACE", "LMB", "RMB"],
+        "interval_lo": 1,
+        "interval_hi": 4,
+        "press_len_lo": 0.1,
+        "press_len_hi": 1,
+        "len": 30
+    },
+    "remapper_settings": {
+        "w": "s",
+        "s": "w",
+        "a": "d",
+        "d": "a",
+        "len": 60
+    },
+    "mouse_pos_invert_settings": {
+        "len": 20
+    }
+}
