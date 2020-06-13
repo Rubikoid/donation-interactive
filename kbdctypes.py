@@ -110,20 +110,20 @@ def ReleaseKey(hexKeyCode):
 
 
 def PressAndRelease(key, duration=0.1):
+    kbdctypes.ReleaseAll()
     if type(key) == str:
-        if key == "CTRL":
-            key = 17
-        elif key == "LMB":
-            key = 1
-        elif key == "RMB":
-            key = 2
-        elif key == "SPACE":
-            key = 32
+        if key in VIRTUAL_KEYS.keys():
+            key = VIRTUAL_KEYS[key]
         else:
             key = ord(key.upper())
     PressKey(key)
     time.sleep(duration)
     ReleaseKey(key)
+
+
+def ReleaseAll():
+    for i in range(256):
+        ReleaseKey(i)
 
 
 def BlockInput(flag):

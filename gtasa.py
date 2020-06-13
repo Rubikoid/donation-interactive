@@ -21,9 +21,6 @@ def enter_cheat(cheat):
             vfout.write(vis_format.format(cheat['cheat'], cheat['description']))
 
     kbdctypes.BlockInput(True)
-    for i in range(256):
-        kbdctypes.ReleaseKey(i)
-    time.sleep(0.02)
 
     for i in cheat['cheat']:
         kbdctypes.PressAndRelease(i, 0.02)
@@ -31,7 +28,7 @@ def enter_cheat(cheat):
     time.sleep(0.02)
     kbdctypes.BlockInput(False)
 
-    time.sleep(10)
+    time.sleep(8)
     with open(vis_file_path, "w") as vfout:
         vfout.write(" ")
 
