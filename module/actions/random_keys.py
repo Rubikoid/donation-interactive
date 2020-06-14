@@ -18,10 +18,10 @@ class RandomKeysHandler(Action):
         "len": 30
     })
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, key_callback):
+        super().__init__(key_callback)
 
-    def do(self):
+    async def do(self):
         random_keys = self.config_vars["random_keys"]
         # vis_file_path = self.config_vars["visualiser_file"]
 
@@ -35,7 +35,10 @@ class RandomKeysHandler(Action):
             duration = random.uniform(self.config_vars["press_len_lo"], self.config_vars["press_len_hi"])
             interval = random.randint(self.config_vars["interval_lo"], self.config_vars["interval_hi"])
 
-            print(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
+            await self.key_callback([
+                (random_key, round(duration, 2))
+            ])
+            # print(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
             # with open(vis_file_path, "w") as vfout:
             #    vfout.write(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
 

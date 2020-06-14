@@ -14,8 +14,8 @@ class PressKey(Action):
         "interval": 1
     })
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, key_callback):
+        super().__init__(key_callback)
 
     def do(self):
         for i in self.config_vars["sequence"]:

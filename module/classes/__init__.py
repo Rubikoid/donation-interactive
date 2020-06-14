@@ -24,11 +24,12 @@ class Action(ConfigurableObject):
         ]
     })
 
-    def __init__(self):
+    def __init__(self, key_callback):
         super().__init__()
+        self.key_callback = key_callback
 
     def do(self):
-        pass
+        self.key_callback([])
 
 
 class Provider(ConfigurableObject):

@@ -2,6 +2,9 @@
 
 import atexit
 import time
+import threading
+import asyncio
+import websockets
 from . import actions
 from . import config
 from . import donation_handlers
@@ -18,7 +21,12 @@ class Main(object):
         self.providers = []
         self.config_loader("actions", self.actions, actions.actions)
         self.config_loader("providers", self.providers, donation_handlers.providers)
-        atexit.register(self.closing_handler)
+        self.clients = []
+
+        self.start_server = websockets.serve(self.ws_handler, "localhost", 6789)
+        asyncio.get_event_loop().run_until_complete(self.start_server)
+
+        # atexit.register(self.closing_handler)
 
     def config_loader(self, collection_name, array_out, array_in):
         secrets_hive = self.conf_manager.secrets[collection_name]
@@ -28,7 +36,7 @@ class Main(object):
             if array_in == donation_handlers.providers:  # FIXME: shitty code
                 var = array_in[i["name"]](self.provider_handler)
             else:
-                var = array_in[i["name"]]()
+                var = array_in[i["name"]](self.action_handler)
             for config_name in var.config_vars:
                 if config_name not in i:
                     continue
@@ -48,13 +56,26 @@ class Main(object):
         for i in self.providers:
             i.disconnect()
 
-    def provider_handler(self, data: classes.Donation):
+    async def provider_handler(self, data: classes.Donation):
         print(f"New donation: {repr(data)}")
         for i in self.actions:
             if i.config_vars["conditions"][0]["price"] == data.amount:
                 print(f"Doing {i}")
-                i.do()
+                await i.do()
                 break
+
+    async def action_handler(self, data: list):
+        for i in data:
+            key, dur = i
+            k = f"Pressed {key} for {dur}"
+            print(k)
+            for i in self.clients:
+                await i.send(k)
+
+    async def ws_handler(self, websocket, path):
+        self.clients.append(websocket)
+        async for message in websocket:
+            pass
 
     def run(self):
         for i in self.actions:
@@ -66,7 +87,24 @@ class Main(object):
         # for i in actions.actions:
         #     print(f"test: {actions.actions[i].config_vars}")
         for i in self.providers:
-            i.connect()
+            asyncio.get_event_loop().run_until_complete(i.connect())
+
+        def wakeup():
+            asyncio.get_event_loop().call_later(0.1, wakeup)
+
+        def wat():
+            print("I'm TRYING TO DIEEE")
+            self.start_server.ws_server.close()
+            asyncio.get_event_loop().stop()
+            asyncio.get_event_loop().close()
+
+        print("Going to infinity loop......")
+        asyncio.get_event_loop().call_later(0.1, wakeup)
+        asyncio.get_event_loop().run_forever()
+
+        # self.sio_thread = threading.Thread(target=lambda: self.socketio.run(self.app))
+        # self.app.run(debug=True)
+        # self.sio_thread.run()
 
 
 def main():
@@ -74,6 +112,7 @@ def main():
     m.run()
     try:
         while True:
+            print("I WANNA DIEEE")
             input()
     finally:
         m.closing_handler()
