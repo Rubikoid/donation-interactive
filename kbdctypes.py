@@ -109,8 +109,13 @@ def ReleaseKey(hexKeyCode):
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
 
+def ReleaseAll():
+    for i in range(256):
+        ReleaseKey(i)
+
+
 def PressAndRelease(key, duration=0.1):
-    kbdctypes.ReleaseAll()
+    ReleaseAll()
     if type(key) == str:
         if key in VIRTUAL_KEYS.keys():
             key = VIRTUAL_KEYS[key]
@@ -119,11 +124,6 @@ def PressAndRelease(key, duration=0.1):
     PressKey(key)
     time.sleep(duration)
     ReleaseKey(key)
-
-
-def ReleaseAll():
-    for i in range(256):
-        ReleaseKey(i)
 
 
 def BlockInput(flag):
