@@ -1,6 +1,7 @@
 import ctypes
 from ctypes import wintypes
 import time
+import asyncio
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
@@ -123,7 +124,7 @@ def ReleaseAll():
         ReleaseKey(i)
 
 
-def PressAndRelease(key, duration=0.1):
+async def PressAndRelease(key, duration=0.1):
     ReleaseAll()
     if type(key) == str:
         if key in VIRTUAL_KEYS.keys():
@@ -131,7 +132,7 @@ def PressAndRelease(key, duration=0.1):
         else:
             key = ord(key.upper())
     PressKey(key)
-    time.sleep(duration)
+    await asyncio.sleep(duration)
     ReleaseKey(key)
 
 

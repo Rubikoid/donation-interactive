@@ -3,6 +3,7 @@ from . import kbdctypes
 import time
 import random
 import datetime
+import asyncio
 from copy import deepcopy
 
 
@@ -17,7 +18,7 @@ class PressKey(Action):
     def __init__(self, key_callback):
         super().__init__(key_callback)
 
-    def do(self):
+    async def do(self):
         for i in self.config_vars["sequence"]:
-            kbdctypes.PressAndRelease(i)
-            time.sleep(self.config_vars["interval"])
+            await kbdctypes.PressAndRelease(i)
+            await asyncio.sleep(self.config_vars["interval"])

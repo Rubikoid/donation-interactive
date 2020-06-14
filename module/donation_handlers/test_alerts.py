@@ -26,7 +26,7 @@ class TestingProvider(Provider):
         ])
 
     async def index(self, data):
-        return web.Response(text="<form action='/donate'><input name='size'/><button type='submit'>ok</button></form>", content_type='text/html')
+        return web.Response(text="<h2>Test donation</h2><form action='/donate'><input name='size'/><button type='submit'>ok</button></form>", content_type='text/html')
 
     async def test_donate(self, data: web.Request):
         # update_config()

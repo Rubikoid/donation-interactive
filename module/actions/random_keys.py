@@ -3,6 +3,7 @@ from . import kbdctypes
 import time
 import random
 import datetime
+import asyncio
 from copy import deepcopy
 
 
@@ -42,8 +43,8 @@ class RandomKeysHandler(Action):
             # with open(vis_file_path, "w") as vfout:
             #    vfout.write(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
 
-            kbdctypes.PressAndRelease(random_key, duration)
-            time.sleep(interval - duration)
+            await kbdctypes.PressAndRelease(random_key, duration)
+            await asyncio.sleep(interval - duration)
             random_key = next_random_key
 
         # with open(vis_file_path, "w") as vfout:
