@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSocket demo</title>
+    <style type="text/css">
+        body {
+            font-family: "Courier New", sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="state">
+
+    </div>
+    <script>
+        var websocket = new WebSocket("ws://127.0.0.1:6789/");
+        var state = document.querySelector('.state')
+        websocket.onmessage = function (event) {
+            data = event.data;
+            state.innerHTML = data;
+            /*switch (data.type) {
+                case 'state':
+                    value.textContent = data.value;
+                    break;
+                case 'users':
+                    users.textContent = (
+                        data.count.toString() + " user" +
+                        (data.count == 1 ? "" : "s"));
+                    break;
+                default:
+                    console.error(
+                        "unsupported event", data);
+            }*/
+        };
+    </script>
+</body>
+
+</html>
