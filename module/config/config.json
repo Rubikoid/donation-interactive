@@ -1,0 +1,44 @@
+{
+    "actions": [
+        {
+            "name": "RandomKeyHandler",
+            "conditions": [
+                {
+                    "price": 100
+                }
+            ],
+            "random_keys": [
+                "q",
+                "w",
+                "e",
+                "a",
+                "s",
+                "d"
+            ],
+            "interval_lo": 1,
+            "interval_hi": 4,
+            "press_len_lo": 0.1,
+            "press_len_hi": 1,
+            "len": 2
+        },
+        {
+            "name": "PressKeyHandler",
+            "conditions": [
+                {
+                    "price": 50
+                }
+            ],
+            "sequence": [
+                "g",
+                "LMB"
+            ],
+            "interval": 1
+        }
+    ],
+    "providers": [
+        {
+            "name": "DonationAlertsProvider",
+            "server": "https://socket2.donationalerts.ru/socket.io"
+        }
+    ]
+}

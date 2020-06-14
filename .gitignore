@@ -1,1 +1,4 @@
 secrets.json
+
+*.pyc
+__pycache__//

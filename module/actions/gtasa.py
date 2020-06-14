@@ -1,4 +1,4 @@
-import kbdctypes
+from . import kbdctypes
 import time
 import csv
 import os
