@@ -18,7 +18,7 @@ def enter_cheat(cheat):
     vis_format = "Interactive cheat {} activated! {}"
     vis_file_path = os.path.join(CWD, "gtasaviz.txt")
     with open(vis_file_path, "w", encoding="utf-8") as vfout:
-            vfout.write(vis_format.format(cheat['cheat'], cheat['description']))
+        vfout.write(vis_format.format(cheat['cheat'], cheat['description']))
 
     kbdctypes.BlockInput(True)
 

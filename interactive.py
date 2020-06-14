@@ -94,7 +94,7 @@ def on_message(data_str):
                     eval(f"{k}()")
 
     else:
-        #print(UnknownMessage(data))
+        # print(UnknownMessage(data))
         pass
 
 
