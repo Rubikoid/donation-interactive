@@ -4,14 +4,14 @@ import time
 
 user32 = ctypes.WinDLL('user32', use_last_error=True)
 
-INPUT_MOUSE    = 0
+INPUT_MOUSE = 0
 INPUT_KEYBOARD = 1
 INPUT_HARDWARE = 2
 
 KEYEVENTF_EXTENDEDKEY = 0x0001
-KEYEVENTF_KEYUP       = 0x0002
-KEYEVENTF_UNICODE     = 0x0004
-KEYEVENTF_SCANCODE    = 0x0008
+KEYEVENTF_KEYUP = 0x0002
+KEYEVENTF_UNICODE = 0x0004
+KEYEVENTF_SCANCODE = 0x0008
 
 MAPVK_VK_TO_VSC = 0
 
@@ -38,11 +38,12 @@ VIRTUAL_KEYS = {'RETURN': 0x0D,
                 'RSHIFT': 0xA1,
                 'LCTRL': 0xA2,
                 'RCTRL': 0xA3
-}
+                }
 
 # C struct definitions
 
 wintypes.ULONG_PTR = wintypes.WPARAM
+
 
 class MOUSEINPUT(ctypes.Structure):
     _fields_ = (("dx",          wintypes.LONG),
@@ -51,6 +52,7 @@ class MOUSEINPUT(ctypes.Structure):
                 ("dwFlags",     wintypes.DWORD),
                 ("time",        wintypes.DWORD),
                 ("dwExtraInfo", wintypes.ULONG_PTR))
+
 
 class KEYBDINPUT(ctypes.Structure):
     _fields_ = (("wVk",         wintypes.WORD),
@@ -67,10 +69,12 @@ class KEYBDINPUT(ctypes.Structure):
             self.wScan = user32.MapVirtualKeyExW(self.wVk,
                                                  MAPVK_VK_TO_VSC, 0)
 
+
 class HARDWAREINPUT(ctypes.Structure):
     _fields_ = (("uMsg",    wintypes.DWORD),
                 ("wParamL", wintypes.WORD),
                 ("wParamH", wintypes.WORD))
+
 
 class INPUT(ctypes.Structure):
     class _INPUT(ctypes.Union):
@@ -81,19 +85,24 @@ class INPUT(ctypes.Structure):
     _fields_ = (("type",   wintypes.DWORD),
                 ("_input", _INPUT))
 
+
 LPINPUT = ctypes.POINTER(INPUT)
+
 
 def _check_count(result, func, args):
     if result == 0:
         raise ctypes.WinError(ctypes.get_last_error())
     return args
 
+
 user32.SendInput.errcheck = _check_count
-user32.SendInput.argtypes = (wintypes.UINT, # nInputs
+user32.SendInput.argtypes = (wintypes.UINT,  # nInputs
                              LPINPUT,       # pInputs
                              ctypes.c_int)  # cbSize
 
 # Functions
+
+
 def PressKey(hexKeyCode):
     #print(f"Pressed {hexKeyCode}")
     x = INPUT(type=INPUT_KEYBOARD,
@@ -109,8 +118,13 @@ def ReleaseKey(hexKeyCode):
     user32.SendInput(1, ctypes.byref(x), ctypes.sizeof(x))
 
 
+def ReleaseAll():
+    for i in range(256):
+        ReleaseKey(i)
+
+
 def PressAndRelease(key, duration=0.1):
-    kbdctypes.ReleaseAll()
+    ReleaseAll()
     if type(key) == str:
         if key in VIRTUAL_KEYS.keys():
             key = VIRTUAL_KEYS[key]
@@ -119,11 +133,6 @@ def PressAndRelease(key, duration=0.1):
     PressKey(key)
     time.sleep(duration)
     ReleaseKey(key)
-
-
-def ReleaseAll():
-    for i in range(256):
-        ReleaseKey(i)
 
 
 def BlockInput(flag):
