@@ -15,7 +15,7 @@
             "press_len_lo": 0.1,
             "press_len_hi": 1,
             "len": 2,
-            "amount": 30
+            "amount": 100
         },
         {
             "name": "PressKeyHandler",

@@ -31,4 +31,5 @@ class ActionExample(Action):
     async def do(self, donation: Donation):
         if donation.amount != self.config_vars["amount"]:
             return
+        await self.key_callback([f"Pressed {self.config_vars['key']}"])
         await kbdctypes.PressAndRelease()

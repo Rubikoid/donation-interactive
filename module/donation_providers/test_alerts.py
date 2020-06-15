@@ -49,6 +49,8 @@ class TestingProvider(Provider):
         })
 
         await self.callback(donation)
+        # asyncio.get_running_loop().create_task(self.callback(donation))
+        # asyncio.get_running_loop().create_task()
         return web.HTTPTemporaryRedirect("/")
 
     async def connect(self):

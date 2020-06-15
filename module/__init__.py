@@ -71,11 +71,8 @@ class Main(object):
     async def key_handler(self, data: list):
         """Key handler, get called by actions, on keys update"""
         for i in data:
-            key, dur = i
-            k = f"Pressed {key} for {dur}"
-            print(k)
-            for i in self.clients:
-                await i.send(k)
+            for c in self.clients:
+                await c.send(i)
 
     async def ws_handler(self, websocket, path):
         self.clients.append(websocket)

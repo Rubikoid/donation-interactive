@@ -11,8 +11,10 @@ class ConfigManager(object):
         self.load()
 
     def load(self):
-        self.config = json.load(open(self.CONFIG_PATH))
-        self.secrets = json.load(open(self.SECRETS_PATH))
+        with open(self.CONFIG_PATH) as conf:
+            self.config = json.load(conf)
+        with open(self.SECRETS_PATH) as sec:
+            self.secrets = json.load(sec)
 
     def save(self):
         json.dump(self.config, open(self.CONFIG_PATH, 'w'))

@@ -48,7 +48,6 @@ class RandomKeysHandler(Action):
         if donation.amount != self.config_vars["amount"]:
             return
         random_keys = self.config_vars["random_keys"]
-        vis_format = "Random keys interactive! Pressed '{}' for {} seconds. Next key is '{}' in {} seconds"
 
         random_key = random.choice(random_keys)
         start_time = datetime.datetime.now()
@@ -58,9 +57,7 @@ class RandomKeysHandler(Action):
             duration = random.uniform(self.config_vars["press_len_lo"], self.config_vars["press_len_hi"])
             interval = random.randint(self.config_vars["interval_lo"], self.config_vars["interval_hi"])
 
-            await self.key_callback([
-                (random_key, round(duration, 2))
-            ])
+            await self.key_callback([f"Pressed {random_key}, for {round(duration, 2)}"])
 
             await kbdctypes.PressAndRelease(random_key, duration)
             await asyncio.sleep(interval - duration)

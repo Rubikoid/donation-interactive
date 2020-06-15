@@ -64,8 +64,8 @@ class Action(ConfigurableObject):
 
     Attributes
     ----------
-    key_callback: Callable[[List[Tuple[str, float]]], None]
-        callback for sending currently pressed keys
+    key_callback: Callable[[List[str]], None]
+        Callback for sending currently pressed keys or any other data to display
 
     Methods
     -------
@@ -77,7 +77,7 @@ class Action(ConfigurableObject):
     config_vars = ConfigurableObject.config_vars.copy()  # this is the right way to update parent's config_vars, and get many probles
     config_vars.update({})
 
-    def __init__(self, key_callback: Callable[[List[Tuple[str, float]]], None]):
+    def __init__(self, key_callback: Callable[[List[str]], None]):
         super().__init__()
         self.key_callback = key_callback
 

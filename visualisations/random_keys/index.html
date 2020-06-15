@@ -38,6 +38,9 @@
                         "unsupported event", data);
             }*/
         };
+        websocket.onopen = function (event) {
+            websocket.send("test");
+        };
     </script>
 </body>
 
