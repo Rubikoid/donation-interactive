@@ -2,11 +2,6 @@
     "actions": [
         {
             "name": "RandomKeyHandler",
-            "conditions": [
-                {
-                    "price": 100
-                }
-            ],
             "random_keys": [
                 "q",
                 "w",
@@ -19,20 +14,17 @@
             "interval_hi": 4,
             "press_len_lo": 0.1,
             "press_len_hi": 1,
-            "len": 2
+            "len": 2,
+            "amount": 30
         },
         {
             "name": "PressKeyHandler",
-            "conditions": [
-                {
-                    "price": 50
-                }
-            ],
             "sequence": [
                 "g",
                 "LMB"
             ],
-            "interval": 1
+            "interval": 1,
+            "amount": 30
         }
     ],
     "providers": [

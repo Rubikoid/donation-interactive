@@ -40,7 +40,7 @@ class TestingProvider(Provider):
 
     async def test_donate(self, data: web.Request):
         # update_config()
-        print(f"New test donation amount: {data.query["size"]}", file=sys.stderr)
+        print(f"New test donation amount: {data.query['size']}", file=sys.stderr)
 
         donation = Donation({
             "additional_data": "{}",
@@ -62,4 +62,5 @@ class TestingProvider(Provider):
         print(f"aiohttp prepared")
 
     async def disconnect(self):
+        print("Stopping aiohttp")
         await self.runner.cleanup()

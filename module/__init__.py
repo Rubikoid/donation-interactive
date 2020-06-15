@@ -40,7 +40,7 @@ class Main(object):
             if array_in == donation_providers.providers:  # FIXME: shitty code
                 var = array_in[i["name"]](self.provider_handler)
             else:
-                var = array_in[i["name"]](self.action_handler)
+                var = array_in[i["name"]](self.key_handler)
             for config_name in var.config_vars:
                 if config_name not in i:
                     continue
@@ -59,7 +59,7 @@ class Main(object):
         """Closing handler, stopps all providers and websocket server"""
         print("Stopping providers...")
         for i in self.providers:
-            i.disconnect()
+            asyncio.get_event_loop().run_until_complete(i.disconnect())
         self.start_server.ws_server.close()
 
     async def provider_handler(self, data: classes.Donation):
@@ -94,14 +94,14 @@ class Main(object):
             asyncio.get_event_loop().run_until_complete(i.connect())
 
         def wakeup():
-            try:
-                asyncio.get_event_loop().call_later(0.1, wakeup)
-            finally:
-                self.closing_handler()
+            asyncio.get_event_loop().call_later(0.1, wakeup)
 
         print("Going to infinity loop...")
         asyncio.get_event_loop().call_later(0.1, wakeup)
-        asyncio.get_event_loop().run_forever()
+        try:
+            asyncio.get_event_loop().run_forever()
+        finally:
+            self.closing_handler()
 
 
 def main():
