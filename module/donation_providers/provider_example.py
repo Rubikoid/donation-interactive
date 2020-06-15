@@ -33,18 +33,19 @@ class ProviderExample(Provider):
 
     async def test_donate(self):
         # update_config()
-        if self._running:
+        while self._running:
             donation = Donation({
                 "additional_data": "{}",
                 "amount_main": self.config_vars["amount"],
                 "username": "FAKE"
             })
             await self.callback(donation)
-            asyncio.get_event_loop().call_later(self.config_vars["period"], self.test_donate)
+            await asyncio.sleep(self.config_vars["period"])
 
     async def connect(self):
         self._running = True
-        asyncio.get_event_loop().call_later(self.config_vars["period"], self.test_donate)
+        await self.test_donate()
 
     async def disconnect(self):
-        await self.runner.cleanup()
+        print("Stopping example provider")
+        self._running = False

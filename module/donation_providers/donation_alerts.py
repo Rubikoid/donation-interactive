@@ -56,4 +56,5 @@ class DonationAlertsProvider(Provider):
         print(f"Connected to donations alerts server {self.config_vars['server']}")
 
     async def disconnect(self):
+        print("Stopping donation alerts")
         await self.sio_da.disconnect()
