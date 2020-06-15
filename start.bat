@@ -1,1 +1,1 @@
-python interactive.py || PAUSE
+python -X dev interactive.py || PAUSE

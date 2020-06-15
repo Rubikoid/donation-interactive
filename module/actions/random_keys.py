@@ -1,4 +1,4 @@
-from ..classes import Action
+from ..classes import Action, Donation
 from . import kbdctypes
 import time
 import random
@@ -8,6 +8,26 @@ from copy import deepcopy
 
 
 class RandomKeysHandler(Action):
+    """Random key action. On donate, press random keys for random time.
+
+    Config:
+    ---
+    random_keys: List = ["q", "w", "e", "a", "s", "d"]
+        List of keys, that can be pressed
+    interval_lo: int = 1
+        minimum interval between keys press
+    interval_hi: int = 4
+        maximum interval between keys press
+    press_len_lo: float = 0.1
+        minimum key press duration
+    press_len_hi: int = 1
+        maximum key press duration
+    len: int = 30
+        time of action effect
+    amount: int = 10
+        Donation amount for action work
+    """
+
     name = "RandomKeyHandler"
     config_vars = Action.config_vars.copy()
     config_vars.update({
@@ -16,16 +36,18 @@ class RandomKeysHandler(Action):
         "interval_hi": 4,
         "press_len_lo": 0.1,
         "press_len_hi": 1,
-        "len": 30
+        "len": 30,
+
+        "amount": 10
     })
 
     def __init__(self, key_callback):
         super().__init__(key_callback)
 
-    async def do(self):
+    async def do(self, donation: Donation):
+        if donation.amount != self.config_vars["amount"]:
+            return
         random_keys = self.config_vars["random_keys"]
-        # vis_file_path = self.config_vars["visualiser_file"]
-
         vis_format = "Random keys interactive! Pressed '{}' for {} seconds. Next key is '{}' in {} seconds"
 
         random_key = random.choice(random_keys)
@@ -39,13 +61,7 @@ class RandomKeysHandler(Action):
             await self.key_callback([
                 (random_key, round(duration, 2))
             ])
-            # print(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
-            # with open(vis_file_path, "w") as vfout:
-            #    vfout.write(vis_format.format(random_key, round(duration, 2), next_random_key, interval))
 
             await kbdctypes.PressAndRelease(random_key, duration)
             await asyncio.sleep(interval - duration)
             random_key = next_random_key
-
-        # with open(vis_file_path, "w") as vfout:
-        #    vfout.write(" ")

@@ -5,22 +5,25 @@ import time
 import threading
 import asyncio
 import websockets
+import logging
 from . import actions
 from . import config
-from . import donation_handlers
+from . import donation_providers
 from . import ui
 from . import classes
 
 
 class Main(object):
-    conf_manager = None
+    """Main, god-like class for entire application
+
+    """
 
     def __init__(self):
         self.conf_manager = config.ConfigManager()
         self.actions = []
         self.providers = []
         self.config_loader("actions", self.actions, actions.actions)
-        self.config_loader("providers", self.providers, donation_handlers.providers)
+        self.config_loader("providers", self.providers, donation_providers.providers)
         self.clients = []
 
         self.start_server = websockets.serve(self.ws_handler, "localhost", 6789)
@@ -29,11 +32,12 @@ class Main(object):
         # atexit.register(self.closing_handler)
 
     def config_loader(self, collection_name, array_out, array_in):
+        """Loads config."""
         secrets_hive = self.conf_manager.secrets[collection_name]
         for i in self.conf_manager.config[collection_name]:
             if i["name"] not in array_in:
                 continue
-            if array_in == donation_handlers.providers:  # FIXME: shitty code
+            if array_in == donation_providers.providers:  # FIXME: shitty code
                 var = array_in[i["name"]](self.provider_handler)
             else:
                 var = array_in[i["name"]](self.action_handler)
@@ -52,19 +56,20 @@ class Main(object):
             array_out.append(var)
 
     def closing_handler(self):
-        print("DIEEEEEEEE")
+        """Closing handler, stopps all providers and websocket server"""
+        print("Stopping providers...")
         for i in self.providers:
             i.disconnect()
+        self.start_server.ws_server.close()
 
     async def provider_handler(self, data: classes.Donation):
+        """Provider handler, get called by donation providers, on new donation"""
         print(f"New donation: {repr(data)}")
         for i in self.actions:
-            if i.config_vars["conditions"][0]["price"] == data.amount:
-                print(f"Doing {i}")
-                await i.do()
-                break
+            asyncio.get_event_loop().create_task(i.do(data))
 
-    async def action_handler(self, data: list):
+    async def key_handler(self, data: list):
+        """Key handler, get called by actions, on keys update"""
         for i in data:
             key, dur = i
             k = f"Pressed {key} for {dur}"
@@ -78,36 +83,29 @@ class Main(object):
             pass
 
     def run(self):
+        """Run everything"""
         for i in self.actions:
-            print(f"Action: {i.__str__()}")
+            print(f"Action: {i.__str__()}\n")
         print()
         for i in self.providers:
-            print(f"Provider: {i.__str__()}")
+            print(f"Provider: {i.__str__()}\n")
 
-        # for i in actions.actions:
-        #     print(f"test: {actions.actions[i].config_vars}")
         for i in self.providers:
             asyncio.get_event_loop().run_until_complete(i.connect())
 
         def wakeup():
-            asyncio.get_event_loop().call_later(0.1, wakeup)
+            try:
+                asyncio.get_event_loop().call_later(0.1, wakeup)
+            finally:
+                self.closing_handler()
 
-        def wat():
-            print("I'm TRYING TO DIEEE")
-            self.start_server.ws_server.close()
-            asyncio.get_event_loop().stop()
-            asyncio.get_event_loop().close()
-
-        print("Going to infinity loop......")
+        print("Going to infinity loop...")
         asyncio.get_event_loop().call_later(0.1, wakeup)
         asyncio.get_event_loop().run_forever()
 
-        # self.sio_thread = threading.Thread(target=lambda: self.socketio.run(self.app))
-        # self.app.run(debug=True)
-        # self.sio_thread.run()
-
 
 def main():
+    logging.getLogger("asyncio").setLevel(logging.DEBUG)
     m = Main()
     m.run()
     try:

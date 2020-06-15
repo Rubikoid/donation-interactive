@@ -6,6 +6,19 @@ import sys
 
 
 class DonationAlertsProvider(Provider):
+    """DonationAlerts provider. Handles new donations on donation alerts
+
+    Config:
+    ---
+    server: str = "https://socket11.donationalerts.ru/socket.io"
+        Default donation alerts server.
+
+    Secrets:
+    ---
+    donationalerts_token: str = ""
+        Token for donation alerts
+    """
+
     name = "DonationAlertsProvider"
 
     config_vars = Provider.config_vars.copy()
@@ -18,8 +31,8 @@ class DonationAlertsProvider(Provider):
         "donationalerts_token": ""
     })
 
-    def __init__(self, action_callback):
-        super().__init__(action_callback)
+    def __init__(self, donation_callback):
+        super().__init__(donation_callback)
         self.sio_da = AsyncClient()
         self.sio_da.on("connect", handler=self.on_connect)
         self.sio_da.on("donation", handler=self.on_message)
@@ -34,21 +47,13 @@ class DonationAlertsProvider(Provider):
         if str(data["alert_type"]) == "1":
             donation = Donation(data)
             await self.callback(donation)
-            # if not gtasa.universal_handler(Donation(data).amount):
-            #    for k, price in CONFIG["price_handlers"].items():
-            #        if Donation(data).amount == price:
-            #           eval(f"{k}()")
-            pass
         else:
-            print(UnknownMessage(data))
-            pass
+            print(f"Unknown message comes from donation alerts{UnknownMessage(data)}")
 
     async def connect(self):
         await self.sio_da.connect(self.config_vars["server"])
         await self.sio_da.emit('add-user', {'token': self.secret_vars["donationalerts_token"], 'type': 'alert_widget'})
         print(f"Connected to donations alerts server {self.config_vars['server']}")
-        # self.sio_da.wait()
-        print(f"Waited?")
 
     async def disconnect(self):
         await self.sio_da.disconnect()
