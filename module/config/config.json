@@ -15,7 +15,7 @@
             "interval_hi": 4,
             "press_len_lo": 0.1,
             "press_len_hi": 1.0,
-            "len": 4,
+            "len": 60,
             "amount": 100
         },
         {

@@ -3,6 +3,8 @@
 
 <head>
     <title>WebSocket demo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <style type="text/css">
         body {
             font-family: "Courier New", sans-serif;
@@ -18,29 +20,24 @@
     <div class="state">
 
     </div>
+
     <script>
         var websocket = new WebSocket("ws://127.0.0.1:6789/");
-        var state = document.querySelector('.state')
+        var state = $('.state');
         websocket.onmessage = function (event) {
             data = event.data;
-            state.innerHTML = data;
-            /*switch (data.type) {
-                case 'state':
-                    value.textContent = data.value;
-                    break;
-                case 'users':
-                    users.textContent = (
-                        data.count.toString() + " user" +
-                        (data.count == 1 ? "" : "s"));
-                    break;
-                default:
-                    console.error(
-                        "unsupported event", data);
-            }*/
+            flash(data);
         };
         websocket.onopen = function (event) {
             websocket.send("test");
         };
+
+        function flash(data) {
+            var new_data = document.createElement("div");
+            new_data.innerHTML = data;
+            state.append(new_data)
+            $(new_data).delay(6000).fadeOut(200);
+        }
     </script>
 </body>
 

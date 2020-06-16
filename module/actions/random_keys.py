@@ -62,5 +62,6 @@ class RandomKeysHandler(Action):
             await self.key_callback([f"Pressed {random_key}, for {round(duration, 2)}"])
 
             await kbdctypes.PressAndRelease(random_key, duration)
+            # await asyncio.sleep(duration)
             await asyncio.sleep(interval - duration)
             random_key = next_random_key

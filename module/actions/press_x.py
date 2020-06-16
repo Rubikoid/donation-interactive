@@ -36,7 +36,7 @@ class PressKey(Action):
     async def do(self, donation: Donation):
         if donation.amount != self.config_vars["amount"]:
             return
-        await self.key_callback([f"Pressed {self.config_vars['sequence']}"])
         for i in self.config_vars["sequence"]:
+            await self.key_callback([f"Pressed {i} as part of {self.config_vars['sequence']}"])
             await kbdctypes.PressAndRelease(i)
             await asyncio.sleep(self.config_vars["interval"])
