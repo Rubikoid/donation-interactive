@@ -127,7 +127,8 @@ class Main(object):
 def main():
     logging.getLogger("asyncio").setLevel(logging.DEBUG)
     m = Main()
-    m.run_configurator()
+    return m
+    # m.run_configurator()
     # m.run()
 
 

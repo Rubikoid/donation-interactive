@@ -1,0 +1,1 @@
+python configurator.py || PAUSE
