@@ -19,10 +19,11 @@ class DonationAlertsProvider(Provider):
         Token for donation alerts
     """
 
-    name = "DonationAlertsProvider"
-
     config_vars = Provider.config_vars.copy()
     config_vars.update({
+        'type': 'DonationAlertsProvider',
+        'name': 'DonationAlertsProvider_name',
+
         "server": "https://socket11.donationalerts.ru/socket.io",
     })
 

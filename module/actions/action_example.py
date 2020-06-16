@@ -18,9 +18,11 @@ class ActionExample(Action):
         Donation amount for action work
     """
 
-    name = "ActionExample"
     config_vars = Action.config_vars.copy()
     config_vars.update({
+        'type': 'ActionExample',
+        'name': 'ActionExample_name',
+
         "key": ["f"],
         "amount": 10
     })

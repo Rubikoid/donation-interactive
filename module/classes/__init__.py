@@ -38,16 +38,16 @@ class ConfigurableObject(object):
 
     Attributes
     ----------
-    name: str
-        object name, may duplicate class name.
     config_vars: Dict[str, object]
         vars, that can be configured and saved to file.
     secret_vars: Dict[str, object]
         vars like config_vars, but saved in the separate file. can be useful for tokens, etc..
     """
 
-    name: str = "obj"
-    config_vars: Dict[str, object] = {}
+    config_vars: Dict[str, object] = {
+        'type': 'obj',
+        'name': 'empty obj',
+    }
     secret_vars: Dict[str, object] = {}
 
     def __init__(self):
@@ -55,8 +55,11 @@ class ConfigurableObject(object):
         self.config_vars = deepcopy(self.config_vars)
         self.secret_vars = deepcopy(self.secret_vars)
 
+    def short(self) -> str:
+        return f"[{self.config_vars['type']}] {self.config_vars['name']}"
+
     def __str__(self) -> str:
-        return f"Name: {self.name}\nVars: {self.config_vars}\nSecrets: {self.secret_vars.keys()}"
+        return f"Type: {self.config_vars['type']}, name: {self.config_vars['name']}\nVars: {self.config_vars}\nSecrets: {self.secret_vars.keys()}"
 
 
 class Action(ConfigurableObject):
@@ -73,9 +76,11 @@ class Action(ConfigurableObject):
         Call on donation. Should call key_callback with pressed keys.
     """
 
-    name = "generic_action"
     config_vars = ConfigurableObject.config_vars.copy()  # this is the right way to update parent's config_vars, and get many probles
-    config_vars.update({})
+    config_vars.update({
+        'type': 'generic_action',
+        'name': 'empty action',
+    })
 
     def __init__(self, key_callback: Callable[[List[str]], None]):
         super().__init__()
@@ -101,9 +106,11 @@ class Provider(ConfigurableObject):
         Call on programm exit, should disconnect from site/shutdown server/etc
     """
 
-    name = "generic_provider"
     config_vars = ConfigurableObject.config_vars.copy()
-    config_vars.update({})
+    config_vars.update({
+        'type': 'generic_provider',
+        'name': 'empty provider',
+    })
 
     def __init__(self, donation_callback: Callable[[Donation], None]):
         super().__init__()

@@ -6,6 +6,7 @@ import threading
 import asyncio
 import websockets
 import logging
+import sys
 from . import actions
 from . import config
 from . import donation_providers
@@ -14,34 +15,40 @@ from . import classes
 
 
 class Main(object):
-    """Main, god-like class for entire application
-
-    """
+    """Main, god-like class for entire application"""
 
     def __init__(self):
         self.conf_manager = config.ConfigManager()
-        self.actions = []
-        self.providers = []
-        self.config_loader("actions", self.actions, actions.actions)
-        self.config_loader("providers", self.providers, donation_providers.providers)
+        self.actions = {}
+        self.providers = {}
+
+        self.config_loader("actions", actions.actions, self.actions)
+        self.config_loader("providers", donation_providers.providers, self.providers)
+
+        for i in self.actions.values():
+            print(f"Action: {i.__str__()}\n")
+        print()
+        for i in self.providers.values():
+            print(f"Provider: {i.__str__()}\n")
+
         self.clients = []
 
         self.start_server = websockets.serve(self.ws_handler, "localhost", 6789)
         asyncio.get_event_loop().run_until_complete(self.start_server)
 
-        # atexit.register(self.closing_handler)
-
-    def config_loader(self, collection_name, array_out, array_in):
+    def config_loader(self, collection_name, array_in, array_out):
         """Loads config."""
         secrets_hive = self.conf_manager.secrets[collection_name]
         for i in self.conf_manager.config[collection_name]:
-            if i["name"] not in array_in:
+            if i["type"] not in array_in:
                 continue
+
             if array_in == donation_providers.providers:  # FIXME: shitty code
-                var = array_in[i["name"]](self.provider_handler)
+                var = array_in[i["type"]](self.provider_handler)
             else:
-                var = array_in[i["name"]](self.key_handler)
-            for config_name in var.config_vars:
+                var = array_in[i["type"]](self.key_handler)
+
+            for config_name in var.config_vars:  # WTF: crazy patch
                 if config_name not in i:
                     continue
                 var.config_vars[config_name] = i[config_name]
@@ -53,19 +60,19 @@ class Main(object):
                             continue
                         var.secret_vars[secret_name] = secr[secret_name]
                     break
-            array_out.append(var)
+            array_out[var.short()] = var
 
     def closing_handler(self):
         """Closing handler, stopps all providers and websocket server"""
         print("Stopping providers...")
-        for i in self.providers:
+        for i in self.providers.values():
             asyncio.get_event_loop().run_until_complete(i.disconnect())
         self.start_server.ws_server.close()
 
     async def provider_handler(self, data: classes.Donation):
         """Provider handler, get called by donation providers, on new donation"""
         print(f"New donation: {repr(data)}")
-        for i in self.actions:
+        for i in self.actions.values():
             asyncio.get_event_loop().create_task(i.do(data))
 
     async def key_handler(self, data: list):
@@ -81,13 +88,7 @@ class Main(object):
 
     def run(self):
         """Run everything"""
-        for i in self.actions:
-            print(f"Action: {i.__str__()}\n")
-        print()
-        for i in self.providers:
-            print(f"Provider: {i.__str__()}\n")
-
-        for i in self.providers:
+        for i in self.providers.values():
             asyncio.get_event_loop().run_until_complete(i.connect())
 
         def wakeup():
@@ -100,17 +101,22 @@ class Main(object):
         finally:
             self.closing_handler()
 
+    def run_configurator(self):
+        from PyQt5 import QtWidgets
+        app = QtWidgets.QApplication([])
+        application = ui.main.MainWindow()
+        application.load_tab("actions", actions.actions, self.actions)
+        application.load_tab("providers", donation_providers.providers, self.providers)
+
+        application.show()
+        sys.exit(app.exec())
+
 
 def main():
     logging.getLogger("asyncio").setLevel(logging.DEBUG)
     m = Main()
-    m.run()
-    try:
-        while True:
-            print("I WANNA DIEEE")
-            input()
-    finally:
-        m.closing_handler()
+    m.run_configurator()
+    # m.run()
 
 
 if __name__ == "__main__":

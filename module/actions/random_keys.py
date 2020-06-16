@@ -20,7 +20,7 @@ class RandomKeysHandler(Action):
         maximum interval between keys press
     press_len_lo: float = 0.1
         minimum key press duration
-    press_len_hi: int = 1
+    press_len_hi: float = 1
         maximum key press duration
     len: int = 30
         time of action effect
@@ -28,14 +28,16 @@ class RandomKeysHandler(Action):
         Donation amount for action work
     """
 
-    name = "RandomKeyHandler"
     config_vars = Action.config_vars.copy()
     config_vars.update({
+        'type': 'RandomKeysHandler',
+        'name': 'RandomKeysHandler_name',
+
         "random_keys": ["q", "w", "e", "a", "s", "d"],
         "interval_lo": 1,
         "interval_hi": 4,
         "press_len_lo": 0.1,
-        "press_len_hi": 1,
+        "press_len_hi": 1.0,
         "len": 30,
 
         "amount": 10

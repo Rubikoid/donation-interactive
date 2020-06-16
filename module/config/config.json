@@ -1,7 +1,8 @@
 {
     "actions": [
         {
-            "name": "RandomKeyHandler",
+            "type": "RandomKeysHandler",
+            "name": "Just random keys",
             "random_keys": [
                 "q",
                 "w",
@@ -13,27 +14,30 @@
             "interval_lo": 1,
             "interval_hi": 4,
             "press_len_lo": 0.1,
-            "press_len_hi": 1,
+            "press_len_hi": 1.0,
             "len": 2,
             "amount": 100
         },
         {
-            "name": "PressKeyHandler",
+            "type": "PressKeyHandler",
+            "name": "Just key",
             "sequence": [
                 "g",
                 "LMB"
             ],
-            "interval": 1,
+            "interval": 1.0,
             "amount": 30
         }
     ],
     "providers": [
         {
-            "name": "DonationAlertsProvider",
+            "type": "DonationAlertsProvider",
+            "name": "Donation alerts provider",
             "server": "https://socket2.donationalerts.ru/socket.io"
         },
         {
-            "name": "TestingProvider"
+            "type": "TestingProvider",
+            "name": "Web server provider"
         }
     ]
 }

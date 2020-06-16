@@ -20,11 +20,13 @@ class PressKey(Action):
         Donation amount for action work
     """
 
-    name = "PressKeyHandler"
     config_vars = Action.config_vars.copy()
     config_vars.update({
+        'type': 'PressKeyHandler',
+        'name': 'PressKeyHandler_name',
+
         "sequence": ["g", "LMB"],
-        "interval": 1,
+        "interval": 1.0,
         "amount": 10
     })
 

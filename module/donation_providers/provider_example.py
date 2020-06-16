@@ -15,10 +15,11 @@ class ProviderExample(Provider):
         period of donate sending
     """
 
-    name = "ProviderExample"
-
     config_vars = Provider.config_vars.copy()
     config_vars.update({
+        'type': 'ProviderExample',
+        'name': 'ProviderExample_name',
+
         'amount': 1337,
         'period': 2222
     })

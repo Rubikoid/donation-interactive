@@ -16,10 +16,11 @@ class TestingProvider(Provider):
         Default port for server
     """
 
-    name = "TestingProvider"
-
     config_vars = Provider.config_vars.copy()
     config_vars.update({
+        'type': 'TestingProvider',
+        'name': 'TestingProvider_name',
+
         "host": "127.0.0.1",
         "port": 9999
     })
