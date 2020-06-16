@@ -3,3 +3,4 @@ python-socketio
 websocket-client
 requests
 pyqt5
+pyqtgraph
