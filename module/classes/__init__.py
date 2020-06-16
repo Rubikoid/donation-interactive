@@ -80,6 +80,7 @@ class Action(ConfigurableObject):
     config_vars.update({
         'type': 'generic_action',
         'name': 'empty action',
+        'enabled': False
     })
 
     def __init__(self, key_callback: Callable[[List[str]], None]):

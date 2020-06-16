@@ -84,7 +84,8 @@ class Main(object):
         """Provider handler, get called by donation providers, on new donation"""
         print(f"New donation: {repr(data)}")
         for i in self.actions.values():
-            asyncio.get_event_loop().create_task(i.do(data))
+            if i.config_vars["enabled"]:
+                asyncio.get_event_loop().create_task(i.do(data))
 
     async def key_handler(self, data: list):
         """Key handler, get called by actions, on keys update"""
