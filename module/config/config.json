@@ -15,7 +15,7 @@
             "interval_hi": 4,
             "press_len_lo": 0.1,
             "press_len_hi": 1.0,
-            "len": 2,
+            "len": 4,
             "amount": 100
         },
         {
@@ -37,7 +37,9 @@
         },
         {
             "type": "TestingProvider",
-            "name": "Web server provider"
+            "name": "Web server provider",
+            "host": "127.0.0.1",
+            "port": 9999
         }
     ]
 }

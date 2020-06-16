@@ -62,6 +62,17 @@ class Main(object):
                     break
             array_out[var.short()] = var
 
+    def config_saver(self, collection_name, array_in):
+        array_out = []
+        for v in array_in.values():
+            array_out.append(v.config_vars)
+        self.conf_manager.config[collection_name] = array_out
+
+    def save_all_config(self):
+        self.config_saver("actions", self.actions)
+        self.config_saver("providers", self.providers)
+        self.conf_manager.save()
+
     def closing_handler(self):
         """Closing handler, stopps all providers and websocket server"""
         print("Stopping providers...")
@@ -107,6 +118,7 @@ class Main(object):
         application = ui.main.MainWindow()
         application.load_tab("actions", actions.actions, self.actions)
         application.load_tab("providers", donation_providers.providers, self.providers)
+        application.ui.saveButton.clicked.connect(self.save_all_config)
 
         application.show()
         sys.exit(app.exec())
