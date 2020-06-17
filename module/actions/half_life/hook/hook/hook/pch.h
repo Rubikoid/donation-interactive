@@ -11,6 +11,16 @@
 #include "framework.h"
 #include "magic_header.h"
 #include "second_magic_header.h"
+#include "Engine.h"
+#include "sock_srv.h"
+
+#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <stdlib.h>
 #include <stdio.h>
+
+extern FILE* _log;
+#define dolog(x, ...) fopen_s(&_log, "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\log.txt", "a"); fprintf(_log, x, __VA_ARGS__); fclose(_log);
 
 #endif //PCH_H

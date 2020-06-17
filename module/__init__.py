@@ -78,6 +78,8 @@ class Main(object):
         print("Stopping providers...")
         for i in self.providers.values():
             asyncio.get_event_loop().run_until_complete(i.disconnect())
+        for i in self.actions.values():
+            asyncio.get_event_loop().run_until_complete(i.destroy())
         self.start_server.ws_server.close()
 
     async def provider_handler(self, data: classes.Donation):
@@ -100,6 +102,9 @@ class Main(object):
 
     def run(self):
         """Run everything"""
+        for i in self.actions.values():
+            asyncio.get_event_loop().run_until_complete(i.init())
+
         for i in self.providers.values():
             asyncio.get_event_loop().run_until_complete(i.connect())
 

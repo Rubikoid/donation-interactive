@@ -110,6 +110,6 @@ def inject_to_process(pid, dll_path):
 
 
 if __name__ == "__main__":
-    pid = get_pid("svencoop.exe")
-    # pid = get_pid("hl.exe")
+    # pid = get_pid("svencoop.exe")
+    pid = get_pid("hl.exe")
     inject_to_process(pid, ".\\hook\\hook\\Debug\\hook.dll")

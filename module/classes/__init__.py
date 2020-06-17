@@ -74,6 +74,10 @@ class Action(ConfigurableObject):
     -------
     async do(donate: Donation)
         Call on donation. Should call key_callback with pressed keys.
+    async init()
+        Call once, on init
+    async destroy()
+        Call once, on shutdown
     """
 
     config_vars = ConfigurableObject.config_vars.copy()  # this is the right way to update parent's config_vars, and get many probles
@@ -86,6 +90,12 @@ class Action(ConfigurableObject):
     def __init__(self, key_callback: Callable[[List[str]], None]):
         super().__init__()
         self.key_callback = key_callback
+
+    async def init(self):
+        pass
+
+    async def destroy(self):
+        pass
 
     async def do(self, donate: Donation):
         await self.key_callback([])
