@@ -21,6 +21,8 @@
 #include <stdio.h>
 
 extern FILE* _log;
-#define dolog(x, ...) fopen_s(&_log, "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\log.txt", "a"); fprintf(_log, x, __VA_ARGS__); fclose(_log);
+
+#define LOG_PATH "C:\\Users\\isika\\Desktop\\Log\\log.txt"
+#define dolog(x, ...) fopen_s(&_log, LOG_PATH, "a"); fprintf(_log, x, __VA_ARGS__); fclose(_log);
 
 #endif //PCH_H
