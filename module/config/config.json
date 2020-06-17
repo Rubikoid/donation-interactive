@@ -3,7 +3,7 @@
         {
             "type": "RandomKeysHandler",
             "name": "Just random keys",
-            "enabled": true,
+            "enabled": false,
             "random_keys": [
                 "q",
                 "w",
@@ -22,13 +22,113 @@
         {
             "type": "PressKeyHandler",
             "name": "Just key",
-            "enabled": true,
+            "enabled": false,
             "sequence": [
                 "g",
                 "LMB"
             ],
             "interval": 1.0,
             "amount": 30
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL LowGravity",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "sv_gravity 200",
+                "_sleep 10",
+                "sv_gravity 800"
+            ],
+            "amount": 1336
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL Low Acceleration",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "sv_accelerate 1",
+                "_sleep 10",
+                "sv_accelerate 10"
+            ],
+            "amount": 1338
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL Rebinder",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "unbind w",
+                "unbind s",
+                "unbind a",
+                "unbind d",
+                "-back;-forward;-moveright;-moveleft",
+                "bind w +back",
+                "bind s +forward",
+                "bind a +moveright",
+                "bind d +moveleft",
+                "_sleep 40",
+                "unbind w",
+                "unbind s",
+                "unbind a",
+                "unbind d",
+                "-back;-forward;-moveright;-moveleft",
+                "bind w +forward",
+                "bind s +back",
+                "bind a +moveleft",
+                "bind d +moveright"
+            ],
+            "amount": 1339
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL DIE",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "kill"
+            ],
+            "amount": 1340
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL NARKOMAIN",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "fov 200",
+                "sv_maxspeed 4000",
+                "sv_maxvelocity 5000",
+                "cl_forwardspeed 10000",
+                "sv_accelerate 100",
+                "_sleep 30",
+                "fov 90",
+                "sv_maxspeed 270",
+                "sv_maxvelocity 2000",
+                "cl_forwardspeed 400",
+                "sv_accelerate 10"
+            ],
+            "amount": 1341
+        },
+        {
+            "type": "HalfLifeCommand",
+            "name": "HL Crosshair",
+            "enabled": true,
+            "exe_name": "hl.exe",
+            "hook_path": "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+            "commands": [
+                "crosshair 0",
+                "_sleep 60",
+                "crosshair 1"
+            ],
+            "amount": 1342
         }
     ],
     "providers": [
@@ -40,8 +140,8 @@
         {
             "type": "TestingProvider",
             "name": "Web server provider",
-            "host": "127.0.0.1",
-            "port": 9999
+            "host": "192.168.1.50",
+            "port": 28852
         }
     ]
 }

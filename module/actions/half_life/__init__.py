@@ -14,8 +14,36 @@ else:
     from . import injector
 
 
+class HLRemoteConsole(object):
+    def __init__(self):
+        self.writer = None
+
+    async def init(self, exe_name, hook):
+        try:
+            pid = injector.get_pid(exe_name)
+        except Exception:
+            print("[x] HL injection not found {exe_name}")
+            return
+        injector.inject_to_process(pid, hook)
+        await asyncio.sleep(5)
+        reader, writer = await asyncio.open_connection("127.0.0.1", 9998)
+        self.reader: asyncio.StreamReader = reader
+        self.writer: asyncio.StreamWriter = writer
+        print("Connection ok")
+        self.writer.write(f"sv_cheats 1".encode())
+        # self.writer.write(f"developer 1")
+        await self.writer.drain()
+
+    async def destroy(self):
+        if self.writer is not None:
+            self.writer.close()
+
+
+hlRemConsole = None
+
+
 class HalfLifeCommand(Action):
-    """empty
+    """HalfLife handler
 
     Config:
     ---
@@ -28,36 +56,48 @@ class HalfLifeCommand(Action):
         'name': 'HalfLifeCommand_name',
 
         'exe_name': 'hl.exe',
-        'hook_path': ".\\hook\\hook\\Debug\\hook.dll",
-        'amount': 1337,
+        'hook_path': "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Debug\\hook.dll",
+        "commands": [
+            "sv_gravity 200",
+            "_sleep 10",
+            "sv_gravity 800"
+        ],
+        "amount": 1337
     })
 
     def __init__(self, key_callback):
         super().__init__(key_callback)
 
     async def init(self):
-        try:
-            pid = injector.get_pid(self.config_vars['exe_name'])
-        except Exception:
-            return
-        injector.inject_to_process(pid, self.config_vars['hook_path'])
-        await asyncio.sleep(5)
-        reader, writer = await asyncio.open_connection("127.0.0.1", 9998)
-        self.reader: asyncio.StreamReader = reader
-        self.writer: asyncio.StreamWriter = writer
-        print("Connection ok")
+        global hlRemConsole
+        if hlRemConsole is None:
+            hlRemConsole = HLRemoteConsole()
+            await hlRemConsole.init(self.config_vars["exe_name"], self.config_vars["hook_path"])
 
     async def destroy(self):
-        self.writer.close()
+        global hlRemConsole
+        if hlRemConsole is not None:
+            await hlRemConsole.destroy()
+            hlRemConsole = None
+
+    async def writer_wrapper(self, cmds: list):
+        for i in cmds:
+            hlRemConsole.writer.write(i.encode())
+        await hlRemConsole.writer.drain()
 
     async def do(self, donation: Donation):
-        if donation.amount < self.config_vars["amount"]:
+        if donation.amount != self.config_vars["amount"]:
             return
-        await self.key_callback([f"Running HL command"])
-        self.writer.write(f"echo TEST {donation.username} {donation.amount}".encode())
-        self.writer.write(f"say TEST {donation.username} {donation.amount}".encode())
-        await self.writer.drain()
-        # await kbdctypes.PressAndRelease()
+        cmd = self.config_vars["commands"]
+        await self.key_callback([f"Running HL commands {', '.join(cmd)}"])
+        for i in cmd:
+            if "_sleep" in i:
+                await asyncio.sleep(float(i.split(' ')[1]))
+            else:
+                await self.writer_wrapper([
+                    # f"say running {i};",
+                    f"{i};"
+                ])
 
 
 if __name__ == "__main__":

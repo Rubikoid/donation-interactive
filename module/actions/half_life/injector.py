@@ -68,8 +68,8 @@ def find_loadlibrary_addr_by_python():
 
 
 def find_loadlibrary_addr_by_c():
-    path = ".\\hook\\hook\\Release\\AddrFinder.exe"
-    path_x64 = ".\\hook\\hook\\x64\\Release\\AddrFinder.exe"
+    path = "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\Release\\AddrFinder.exe"
+    path_x64 = "D:\\Dsct\\Progs\\donation-interactive\\module\\actions\\half_life\\hook\\hook\\x64\\Release\\AddrFinder.exe"
     addr = int(subprocess.check_output(path), 16)
     addr_x64 = int(subprocess.check_output(path_x64), 16)
     print(f"[+] LoadLibraryW addrs: {addr:x}, {addr_x64:x}")

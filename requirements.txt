@@ -4,3 +4,4 @@ websocket-client
 requests
 pyqt5
 pyqtgraph
+quamash

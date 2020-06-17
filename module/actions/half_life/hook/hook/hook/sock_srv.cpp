@@ -131,7 +131,7 @@ void TCPSrv::handle() {
             do {
                 iResult = recv(cSock, recvbuf, recvbuflen, 0);
                 if (iResult > 0) {
-                    recvbuf[iResult + 1] = '\0';
+                    recvbuf[iResult] = '\0';
                     dolog("[TCPSRV] Recvd (%d bytes): '%s'\n", iResult, recvbuf);
                     g_Engine.pfnClientCmd(recvbuf);
                 }

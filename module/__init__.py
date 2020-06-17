@@ -32,9 +32,7 @@ class Main(object):
             print(f"Provider: {i.__str__()}\n")
 
         self.clients = []
-
-        self.start_server = websockets.serve(self.ws_handler, "localhost", 6789)
-        asyncio.get_event_loop().run_until_complete(self.start_server)
+        self.loop = None
 
     def config_loader(self, collection_name, array_in, array_out):
         """Loads config."""
@@ -93,7 +91,10 @@ class Main(object):
         """Key handler, get called by actions, on keys update"""
         for i in data:
             for c in self.clients:
-                await c.send(i)
+                if c.state == websockets.protocol.State.CLOSED:
+                    self.clients.remove(c)
+                else:
+                    await c.send(i)
 
     async def ws_handler(self, websocket, path):
         self.clients.append(websocket)
@@ -103,31 +104,42 @@ class Main(object):
     def run(self):
         """Run everything"""
         for i in self.actions.values():
-            asyncio.get_event_loop().run_until_complete(i.init())
+            self.loop.run_until_complete(i.init())
 
         for i in self.providers.values():
-            asyncio.get_event_loop().run_until_complete(i.connect())
+            self.loop.run_until_complete(i.connect())
+
+        self.start_server = websockets.serve(self.ws_handler, "localhost", 6789)
+        self.loop.run_until_complete(self.start_server)
 
         def wakeup():
-            asyncio.get_event_loop().call_later(0.1, wakeup)
+            self.loop.call_later(0.1, wakeup)
 
         print("Going to infinity loop...")
-        asyncio.get_event_loop().call_later(0.1, wakeup)
+        self.loop.call_later(0.1, wakeup)
         try:
-            asyncio.get_event_loop().run_forever()
+            self.loop.run_forever()
         finally:
             self.closing_handler()
 
     def run_configurator(self):
         from PyQt5 import QtWidgets
+        from quamash import QEventLoop, QThreadExecutor
+
         app = QtWidgets.QApplication([])
+        loop = QEventLoop(app)
+        asyncio.set_event_loop(loop)
+
         application = ui.main.MainWindow()
         application.load_tab("actions", actions.actions, self.actions)
         application.load_tab("providers", donation_providers.providers, self.providers)
         application.ui.saveButton.clicked.connect(self.save_all_config)
 
         application.show()
-        sys.exit(app.exec())
+        with loop:
+            self.loop = loop
+            self.run()
+        # sys.exit(app.exec())
 
 
 def main():
